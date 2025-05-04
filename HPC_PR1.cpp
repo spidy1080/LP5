@@ -1,7 +1,7 @@
 #include <iostream>
 #include <queue>
 #include <vector>
-#include <omp.h>
+#include <omp.h> // Required for parallelism
 using namespace std;
 
 class Graph {
@@ -17,8 +17,9 @@ public:
 
     void addEdge(int v, int w) {
         adj[v].push_back(w);
-        adj[w].push_back(v);
-    }--
+        adj[w].push_back(v);  // Undirected graph
+    }
+
     void bfs(int s) {
         vector<bool> visit(V, false);
         queue<int> q;
@@ -32,9 +33,10 @@ public:
             cout << u << " ";
 
             for (int i = 0; i < adj[u].size(); i++) {
-                if (!visit[adj[u][i]]) {
-                    visit[adj[u][i]] = true;
-                    q.push(adj[u][i]);
+                int neighbor = adj[u][i];
+                if (!visit[neighbor]) {
+                    visit[neighbor] = true;
+                    q.push(neighbor);
                 }
             }
         }
@@ -50,10 +52,10 @@ private:
         visited[u] = true;
         cout << u << " ";
 
-        // Process neighbors serially (not parallel)
         for (int i = 0; i < adj[u].size(); i++) {
-            if (!visited[adj[u][i]]) {
-                dfs_helper(adj[u][i], visited);
+            int neighbor = adj[u][i];
+            if (!visited[neighbor]) {
+                dfs_helper(neighbor, visited);
             }
         }
     }
